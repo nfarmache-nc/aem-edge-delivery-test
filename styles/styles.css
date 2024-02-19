@@ -14,10 +14,16 @@
   /* colors */
   --link-color: #035fe6;
   --link-hover-color: #136ff6;
-  --background-color: white;
   --light-color: #eee;
   --dark-color: #ccc;
-  --text-color: black;
+
+  --background-color-light: white;
+  --background-color-dark: #222222;
+  --background-color: var(--background-color-light);
+ 
+  --text-color-light: black;
+  --text-color-dark: #eeeeee;
+  --text-color: var(--text-color-light);
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback;
@@ -71,6 +77,11 @@ body {
 
 body.appear {
   display: block;
+}
+
+body.dark {
+  --background-color: var(--background-color-dark);
+  --text-color: var(--text-color-dark);
 }
 
 header {
@@ -183,6 +194,15 @@ main img {
 .icon img {
   height: 100%;
   width: 100%;
+}
+
+main {
+  transition: opacity 0.7s;
+}
+
+main.hidden {
+  opacity: 0;
+  transition: none;
 }
 
 /* sections */
