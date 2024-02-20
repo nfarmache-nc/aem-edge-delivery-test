@@ -4,7 +4,7 @@ indices:
   default:
     include:
       - /**
-    target: /query-index.json
+    target: /query-index
     properties:
       lastModified:
         select: none
