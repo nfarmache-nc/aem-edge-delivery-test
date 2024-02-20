@@ -195,11 +195,12 @@ main img {
 }
 
 main {
-  transition: opacity 0.7s;
+  transition: opacity 0.5s;
 }
 
 main.hidden {
   opacity: 0;
+  min-height: 100vh;
   transition: none;
 }
 

@@ -49,10 +49,14 @@ async function navigate(path, shouldPushState = true) {
     });
 }
 
-function checkUrl(href) {
+function checkUrl(href, force = false) {
   const url = new URL(href, document.location.href);
   const path = `${url.pathname}${url.search}${url.hash}`;
   const simplePath = url.pathname;
+
+  if (force) {
+    return { path, shouldFetchPage: true };
+  }
 
   // check origin
   if (url.origin !== document.location.origin) {
@@ -89,7 +93,7 @@ const clickHandler = (event) => {
 };
 
 const popstateHandler = () => {
-  const { path } = checkUrl(document.location.href);
+  const { path } = checkUrl(document.location.href, true);
   navigate(path, false);
 };
 
