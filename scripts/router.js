@@ -1,32 +1,30 @@
 import { decorateMain } from './scripts.js';
-import { loadBlocks, getMetadata, toClassName } from './aem.js';
+import { loadBlocks, decorateTemplateAndTheme } from './aem.js';
 
+// Add your excluded paths to the list
 const excludedPaths = [
   '/excluded',
 ];
 
-const indexPath = '/head-index.json';
-
-function decorateTemplateAndTheme(newDocument) {
-  const addClasses = (element, classes) => {
-    classes.split(',').forEach((c) => {
-      element.classList.add(toClassName(c.trim()));
-    });
-  };
-  document.body.className = 'appear';
-  const template = getMetadata('template', newDocument);
-  if (template) addClasses(document.body, template);
-  const theme = getMetadata('theme', newDocument);
-  if (theme) addClasses(document.body, theme);
-}
-
 async function render(html) {
   const main = document.querySelector('body>main');
+  const head = document.querySelector('html>head');
   const newDocument = new DOMParser().parseFromString(html, 'text/html');
+  const newHead = newDocument.querySelector('html>head');
+
+  // replace meta tags
+  [...head.querySelectorAll('meta')].forEach((tag) => tag.remove());
+  const metaHtml = [...newHead.querySelectorAll('meta')].map((meta) => (meta).outerHTML).join('\n');
+  head.querySelector('title').insertAdjacentHTML('afterend', metaHtml);
+
+  // replace title
   document.title = newDocument.title;
+
+  // replace main
   main.innerHTML = newDocument.querySelector('body>main').innerHTML;
   main.classList.add('hidden');
-  decorateTemplateAndTheme(newDocument);
+  document.body.className = 'appear';
+  decorateTemplateAndTheme();
   decorateMain(main);
   await loadBlocks(main);
   main.classList.remove('hidden');
@@ -61,6 +59,11 @@ function checkUrl(href) {
     return { shouldFetchPage: false };
   }
 
+  // check if it's the same page
+  if (simplePath === document.location.pathname) {
+    return { shouldFetchPage: false };
+  }
+
   // check excluded paths
   if (excludedPaths.some((excludedPath) => (
     document.location.pathname === excludedPath
@@ -88,20 +91,11 @@ const clickHandler = (event) => {
 const popstateHandler = () => {
   const { path } = checkUrl(document.location.href);
   navigate(path, false);
-}
-
-function loadIndex() {
-  fetch(indexPath)
-    .then((response) => response.json())
-    .then((indexData) => {
-      console.log(indexData);
-    });
-}
+};
 
 function router() {
   document.addEventListener('click', clickHandler);
   window.addEventListener('popstate', popstateHandler);
-  setTimeout(loadIndex, 2000);
 }
 
 router();
