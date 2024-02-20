@@ -1,6 +1,10 @@
 import { decorateMain } from './scripts.js';
 import { loadBlocks, getMetadata, toClassName } from './aem.js';
 
+const excludedPaths = [
+  '/excluded',
+];
+
 function decorateTemplateAndTheme(newDocument) {
   const addClasses = (element, classes) => {
     classes.split(',').forEach((c) => {
@@ -14,9 +18,19 @@ function decorateTemplateAndTheme(newDocument) {
   if (theme) addClasses(document.body, theme);
 }
 
-async function fetchPage(path, shouldPushState = true) {
+async function render(html) {
   const main = document.querySelector('body>main');
-  // const plainPath = `${path}${path.endsWith('/') ? 'index' : ''}.plain.html`;
+  const newDocument = new DOMParser().parseFromString(html, 'text/html');
+  document.title = newDocument.title;
+  main.innerHTML = newDocument.querySelector('body>main').innerHTML;
+  main.classList.add('hidden');
+  decorateTemplateAndTheme(newDocument);
+  decorateMain(main);
+  await loadBlocks(main);
+  main.classList.remove('hidden');
+}
+
+async function navigate(path, shouldPushState = true) {
   fetch(path)
     .then((response) => {
       const contentType = response.headers.get('content-type');
@@ -31,34 +45,50 @@ async function fetchPage(path, shouldPushState = true) {
         window.history.pushState({}, '', path);
       }
 
-      const newDocument = new DOMParser().parseFromString(html, 'text/html');
-      document.title = newDocument.title;
-      main.innerHTML = newDocument.querySelector('body>main').innerHTML;
-      main.classList.add('hidden');
-      decorateTemplateAndTheme(newDocument);
-      decorateMain(main);
-      await loadBlocks(main);
-      main.classList.remove('hidden');
+      render(html);
     });
+}
+
+function checkUrl(href) {
+  const url = new URL(href, document.location.href);
+  const path = `${url.pathname}${url.search}${url.hash}`;
+  const simplePath = url.pathname;
+
+  // check origin
+  if (url.origin !== document.location.origin) {
+    return { shouldFetchPage: false };
+  }
+
+  // check excluded paths
+  if (excludedPaths.some((excludedPath) => (
+    document.location.pathname === excludedPath
+    || document.location.pathname.startsWith(`${excludedPath}/`)
+    || simplePath === excludedPath
+    || simplePath.startsWith(`${excludedPath}/`)
+  ))) {
+    return { shouldFetchPage: false };
+  }
+
+  // ok
+  return { path, shouldFetchPage: true };
 }
 
 const clickHandler = (event) => {
   const { target } = event;
-  const url = new URL(target.href, document.location.href);
-  if (target.tagName === 'A' && url.origin === document.location.origin) {
-    event.preventDefault();
-    const path = `${url.pathname}${url.search}${url.hash}`;
-    fetchPage(path);
-  }
+  if (target.tagName !== 'A' || typeof target.href === 'undefined') return;
+  const { shouldFetchPage, path } = checkUrl(target.href);
+  if (!shouldFetchPage) return;
+
+  event.preventDefault();
+  navigate(path);
 };
 
 function router() {
   document.addEventListener('click', clickHandler);
 
   window.addEventListener('popstate', () => {
-    const url = new URL(document.location.href);
-    const path = `${url.pathname}${url.search}${url.hash}`;
-    fetchPage(path, false);
+    const { path } = checkUrl(document.location.href);
+    navigate(path, false);
   });
 }
 
