@@ -1,4 +1,4 @@
-import { decorateMain, loadPage } from './scripts.js';
+import { decorateMain } from './scripts.js';
 import { loadBlocks, getMetadata, toClassName } from './aem.js';
 
 function decorateTemplateAndTheme(newDocument) {
@@ -17,25 +17,18 @@ function decorateTemplateAndTheme(newDocument) {
 async function fetchPage(path, shouldPushState = true) {
   const main = document.querySelector('body>main');
   // const plainPath = `${path}${path.endsWith('/') ? 'index' : ''}.plain.html`;
-  let isOK = false;
   fetch(path)
     .then((response) => {
-      isOK = response.ok;
+      const contentType = response.headers.get('content-type');
+      if (!response.ok || !contentType || !contentType.includes('text/html')) {
+        window.location.href = path;
+      }
+
       return response.text();
     })
     .then(async (html) => {
       if (shouldPushState) {
         window.history.pushState({}, '', path);
-      }
-
-      if (!isOK) {
-        // eslint-disable-next-line no-use-before-define
-        document.removeEventListener('click', clickHandler);
-        document.open();
-        document.write(html);
-        document.close();
-        await loadPage();
-        return;
       }
 
       const newDocument = new DOMParser().parseFromString(html, 'text/html');
