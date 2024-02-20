@@ -83,13 +83,14 @@ const clickHandler = (event) => {
   navigate(path);
 };
 
+const popstateHandler = () => {
+  const { path } = checkUrl(document.location.href);
+  navigate(path, false);
+}
+
 function router() {
   document.addEventListener('click', clickHandler);
-
-  window.addEventListener('popstate', () => {
-    const { path } = checkUrl(document.location.href);
-    navigate(path, false);
-  });
+  window.addEventListener('popstate', popstateHandler);
 }
 
 router();
