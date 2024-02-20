@@ -50,12 +50,12 @@ const clickHandler = (event) => {
     const path = `${url.pathname}${url.search}${url.hash}`;
     fetchPage(path);
   }
-}
+};
 
 function router() {
   document.addEventListener('click', clickHandler);
 
-  window.addEventListener('popstate', (event) => {
+  window.addEventListener('popstate', () => {
     const url = new URL(document.location.href);
     const path = `${url.pathname}${url.search}${url.hash}`;
     fetchPage(path, false);

@@ -16,13 +16,11 @@
   --link-hover-color: #136ff6;
   --light-color: #eee;
   --dark-color: #ccc;
-
   --background-color-light: white;
-  --background-color-dark: #222222;
+  --background-color-dark: #222;
   --background-color: var(--background-color-light);
- 
   --text-color-light: black;
-  --text-color-dark: #eeeeee;
+  --text-color-dark: #eee;
   --text-color: var(--text-color-light);
 
   /* fonts */
