@@ -4,6 +4,7 @@ import { loadBlocks, decorateTemplateAndTheme } from './aem.js';
 // Add your excluded paths to the list
 const excludedPaths = [
   '/excluded',
+  '/app',
 ];
 
 async function render(html) {
@@ -70,9 +71,7 @@ function checkUrl(href, force = false) {
 
   // check excluded paths
   if (excludedPaths.some((excludedPath) => (
-    document.location.pathname === excludedPath
-    || document.location.pathname.startsWith(`${excludedPath}/`)
-    || simplePath === excludedPath
+    simplePath === excludedPath
     || simplePath.startsWith(`${excludedPath}/`)
   ))) {
     return { shouldFetchPage: false };
@@ -98,6 +97,13 @@ const popstateHandler = () => {
 };
 
 function router() {
+  if (excludedPaths.some((excludedPath) => (
+    document.location.pathname === excludedPath
+    || document.location.pathname.startsWith(`${excludedPath}/`)
+  ))) {
+    return;
+  }
+
   document.addEventListener('click', clickHandler);
   window.addEventListener('popstate', popstateHandler);
 }
