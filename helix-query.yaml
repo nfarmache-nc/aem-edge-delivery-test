@@ -2,17 +2,8 @@ version: 1
 
 indices:
   default:
-    target: /query-index
+    target: /head-index
     properties:
-      lastModified:
-        select: none
-        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
-      title:
-        select: head > meta[property="og:title"]
-        value: attribute(el, "content")
-      template:
-        select: head > meta[name="template"]
-        value: attribute(el, "content")
-      theme:
-        select: head > meta[name="theme"]
-        value: attribute(el, "content")
+      meta:
+        select: head > meta
+        values: el

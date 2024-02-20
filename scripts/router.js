@@ -5,6 +5,8 @@ const excludedPaths = [
   '/excluded',
 ];
 
+const indexPath = '/head-index.json';
+
 function decorateTemplateAndTheme(newDocument) {
   const addClasses = (element, classes) => {
     classes.split(',').forEach((c) => {
@@ -88,9 +90,18 @@ const popstateHandler = () => {
   navigate(path, false);
 }
 
+function loadIndex() {
+  fetch(indexPath)
+    .then((response) => response.json())
+    .then((indexData) => {
+      console.log(indexData);
+    });
+}
+
 function router() {
   document.addEventListener('click', clickHandler);
   window.addEventListener('popstate', popstateHandler);
+  setTimeout(loadIndex, 2000);
 }
 
 router();
