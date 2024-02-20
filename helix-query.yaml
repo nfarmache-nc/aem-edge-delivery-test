@@ -1,9 +1,7 @@
 version: 1
-auto-generated: true
+
 indices:
   default:
-    include:
-      - /**
     target: /query-index
     properties:
       lastModified:
