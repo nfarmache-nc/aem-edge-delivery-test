@@ -7,13 +7,3 @@ indices:
       meta:
         select: head > meta
         values: el
-    queries:
-      all:
-        hitsPerPage: 25
-        cache: 600
-      by-meta:
-        parameters: meta
-        query: "*"
-        filters: |
-          meta:${meta}
-        cache: "300"
