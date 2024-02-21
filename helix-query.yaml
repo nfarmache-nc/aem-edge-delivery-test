@@ -1,0 +1,9 @@
+version: 1
+
+indices:
+  head-index:
+    target: /head-index
+    properties:
+      meta:
+        select: head > meta
+        values: el
