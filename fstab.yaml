@@ -1,5 +1,9 @@
 mountpoints:
   /: https://drive.google.com/drive/u/1/folders/1_T8ewh3CO5olhCcOY4awn90VZZe4d35T
+  /custom:
+    url: https://www.example.com/content/
+    type: markup
+  /foo/: https://localhost:4502
   /nc/: https://www.netcentric.biz
 folders:
   /spa: /spa/dist/index.html
