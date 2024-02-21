@@ -1,4 +1,5 @@
 mountpoints:
   /: https://drive.google.com/drive/u/1/folders/1_T8ewh3CO5olhCcOY4awn90VZZe4d35T
+  /nc: https://www.netcentric.biz/
 folders:
   /spa: /spa/dist/index.html
