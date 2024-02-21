@@ -1,5 +1,4 @@
 mountpoints:
   /: https://drive.google.com/drive/u/1/folders/1_T8ewh3CO5olhCcOY4awn90VZZe4d35T
 folders:
-  /app: /blocks/react-app/index.html
-  /about2: /about
+  /app-test: /blocks/react-app/index.html
