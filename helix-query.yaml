@@ -11,9 +11,9 @@ indices:
       all:
         hitsPerPage: 25
         cache: 600
-      by-page:
-        parameters: page
+      by-path:
+        parameters: path
         query: "*"
         filters: |
-          page:${page}
+          path:${path}
         cache: "300"
