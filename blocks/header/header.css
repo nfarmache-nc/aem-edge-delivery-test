@@ -186,6 +186,11 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: 500;
 }
 
+header nav .nav-sections ul a.current-page {
+  font-weight: 800;
+  opacity: 0.9;
+}
+
 @media (width >= 900px) {
   header nav .nav-sections {
     display: block;

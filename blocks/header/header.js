@@ -86,6 +86,26 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+function setCurrentPage(element) {
+  const currentPath = document.location.pathname;
+
+  element.querySelectorAll('a[href]').forEach((link) => {
+    const linkURL = new URL(link.getAttribute('href'), document.location.href);
+    const linkPath = linkURL.pathname;
+    if (linkPath === currentPath) {
+      link.classList.add('current-page');
+    } else {
+      link.classList.remove('current-page');
+    }
+  });
+}
+
+function listenToNavigationeEvents() {
+  window.addEventListener('router:navgate', () => {
+    setCurrentPage(document.getElementById('nav'));
+  });
+}
+
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -143,6 +163,8 @@ export default async function decorate(block) {
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
+  setCurrentPage(nav);
+  listenToNavigationeEvents();
   navWrapper.append(nav);
   block.append(navWrapper);
 }
